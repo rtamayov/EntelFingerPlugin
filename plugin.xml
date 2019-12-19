@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        id="cordova-plugin-entelfingerplugin" version="0.0.1">
+    <name>EntelFingerPlugin</name>
+
+    <description>An Android Cordova plugin that allows users to display simple Toast messages at the bottom of the screen.</description>
+    <license>MIT</license>
+
+    <keywords>cordova,android,toast,message,alert</keywords>
+    <repo>https://github.com/rtamayov/EntelFingerPlugin.git</repo>
+    <issue>https://github.com/rtamayov/EntelFingerPlugin/issues</issue>
+  
+    <engines>
+        <engine name="cordova" version=">=3.0.0"/>
+    </engines>
+  
+    <js-module src="www/entelfingerplugin.js" name="entelFingerPlugin">
+        <clobbers target="window.plugins.entelFingerPlugin" />
+    </js-module>
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="EntelFingerPlugin">
+                <param name="android-package" value="pe.entel.cordova.plugin.EntelFinger"/>
+            </feature>
+        </config-file>
+		<config-file target="AndroidManifest.xml" parent="application">
+				<activity android:name="pe.entel.cordova.plugin.FourFingerActivity"></activity>
+		</config-file>
+
+
+        <source-file src="src/android/EntelFinger.java" target-dir="src/pe/entel/cordova/plugin" />
+		<source-file src="src/android/FourFingerActivity.java" target-dir="src/pe/entel/cordova/plugin" />
+		
+    </platform>
+</plugin>
