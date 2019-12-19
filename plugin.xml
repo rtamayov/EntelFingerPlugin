@@ -21,16 +21,16 @@
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="EntelFingerPlugin">
-                <param name="android-package" value="pe.entel.cordova.plugin.EntelFinger"/>
+                <param name="android-package" value="bio.insolutions.veridium.entel.piloto.cordova.plugin.EntelFinger"/>
             </feature>
         </config-file>
 		<config-file target="AndroidManifest.xml" parent="application">
-				<activity android:name="pe.entel.cordova.plugin.FourFingerActivity"></activity>
+				<activity android:name="bio.insolutions.veridium.entel.piloto.cordova.plugin.FourFingerActivity"></activity>
 		</config-file>
 
 
-        <source-file src="src/android/EntelFinger.java" target-dir="src/pe/entel/cordova/plugin" />
-		<source-file src="src/android/FourFingerActivity.java" target-dir="src/pe/entel/cordova/plugin" />
+        <source-file src="src/android/EntelFinger.java" target-dir="src/bio/insolutions/veridium/entel/cordova/piloto/plugin" />
+		<source-file src="src/android/FourFingerActivity.java" target-dir="src/bio/insolutions/veridium/entel/piloto/cordova/plugin" />
 		
     </platform>
 </plugin>

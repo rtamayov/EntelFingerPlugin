@@ -1,4 +1,4 @@
-package pe.entel.cordova.plugin;
+package bio.insolutions.veridium.entel.piloto.cordova.plugin;
 // The native Toast API
 import android.widget.Toast;
 // Cordova-required packages
@@ -13,7 +13,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.Context;
 
-import pe.entel.cordova.plugin.FourFingerActivity;
+import bio.insolutions.veridium.entel.piloto.cordova.plugin.FourFingerActivity;
 
 public class EntelFinger extends CordovaPlugin {
 

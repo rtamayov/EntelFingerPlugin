@@ -1,4 +1,4 @@
-package pe.entel.cordova.plugin;
+package bio.insolutions.veridium.entel.piloto.cordova.plugin;
 
 import android.app.Activity;
 import android.content.Intent;
