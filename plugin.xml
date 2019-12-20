@@ -26,8 +26,9 @@
         </config-file>
 		<config-file target="AndroidManifest.xml" parent="application">
 				<activity android:name="bio.insolutions.veridium.entel.piloto.cordova.plugin.FourFingerActivity"
-				 android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
-				 <meta-data
+				 android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"></activity>
+				<activity android:name="bio.insolutions.veridium.entel.piloto.cordova.plugin.CustomFourFBiometricsActivity">
+				  <meta-data
                 android:name="com.veridiumid.sdk.component.config"
                 android:value="uid=4F,optional=false,validator=com.veridiumid.sdk.fourf.FourFValidator" />
 				 
@@ -62,6 +63,7 @@
 		<resource-file src="src/android/res/layout/activity_fourfinger.xml" target="res/layout/activity_fourfinger.xml" />
         <source-file src="src/android/EntelFinger.java" target-dir="src/bio/insolutions/veridium/entel/cordova/piloto/plugin" />
 		<source-file src="src/android/FourFingerActivity.java" target-dir="src/bio/insolutions/veridium/entel/piloto/cordova/plugin" />
+		<source-file src="src/android/CustomFourFBiometricsActivity.java" target-dir="src/bio/insolutions/veridium/entel/piloto/cordova/plugin" />
 		
 		<!-- local aar dependencies -->
 		 <lib-file src="src/android/libs/core.aar"/>
