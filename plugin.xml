@@ -26,7 +26,12 @@
         </config-file>
 		<config-file target="AndroidManifest.xml" parent="application">
 				<activity android:name="bio.insolutions.veridium.entel.piloto.cordova.plugin.FourFingerActivity"
-				 android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"></activity>
+				 android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+				 <meta-data
+                android:name="com.veridiumid.sdk.component.config"
+                android:value="uid=4F,optional=false,validator=com.veridiumid.sdk.fourf.FourFValidator" />
+				 
+				 </activity>
 				 			 
 		<meta-data
             android:name="com.veridiumid.sdk.LICENSE"

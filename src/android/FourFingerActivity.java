@@ -13,6 +13,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+// Cordova-required packages
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.PluginResult;
+
 import com.digitalpersona.uareu.Compression;
 import com.digitalpersona.uareu.UareUException;
 import com.digitalpersona.uareu.dpfj.CompressionImpl;
@@ -42,6 +47,8 @@ import android.content.res.Resources;
 public class FourFingerActivity extends Activity {
 
 	public final String LOG_SEGUIMIENTO = "seguimientoLog";
+	private static final int REQUEST_CAPTURE = 3;
+	
     private String package_name;
 	private Resources resources;
 	
@@ -56,22 +63,25 @@ public class FourFingerActivity extends Activity {
 		
 		preInitSDK();
 		verificarPermisosAplicacion();
+		initSDK();
 		
 		button_capture = (Button) findViewById(getResourceId("id/btn_presioname"));
 		button_capture.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Log.v("XXX","Hole a Todes!!");
+                ExportConfig.optimiseForIndexLittle(false);
+                ExportConfig.optimiseForIndex(false);
+
+                if (mBiometricSDK != null) {
+                    Intent captureIntent = mBiometricSDK.capture(new String[]{FourFInterface.UID});
+                    startActivityForResult(captureIntent, REQUEST_CAPTURE);
+                }else{
+                    ToastHelper.showMessage(FourFingerActivity.this, "engine_not_initialise");
+                    Log.e(LOG_SEGUIMIENTO, "IVeridiumSDK object not initialised");
+                }
             }
         });
     }
 	
-	@Override
-    public void onBackPressed() {
-		Intent i = new Intent();
-        i.putExtra("base64String", "PRUEBA!!!!");
-        setResult(Activity.RESULT_OK, i);
-        finish();
-    }
 	
 	private int getResourceId (String typeAndName)
     {
@@ -124,6 +134,35 @@ public class FourFingerActivity extends Activity {
         } else {
             // Por ser una versión anterior a Android Marshmallow (API 23), no es necesario solicitar permisos
             Log.d(LOG_SEGUIMIENTO, "No es necesario solicitar permisos por la versión de Android");
+        }
+    }
+	
+	private void initSDK() {
+
+        ExportConfig.setFormat(IBiometricFormats.TemplateFormat.FORMAT_JSON);
+        ExportConfig.setCalculate_NFIQ(true);
+        ExportConfig.setBackground_remove(true);
+        ExportConfig.setPackDebugInfo(false);
+        ExportConfig.setPackExtraScale(false);
+        ExportConfig.setPackAuditImage(false);
+        ExportConfig.setUseLiveness(false);
+        ExportConfig.setLaxLiveness(false);
+
+        ExportConfig.setPack_raw_scaled(true);
+        ExportConfig.setPack_png_scaled(true);
+        ExportConfig.setPack_wsq_scaled(false);
+
+        ExportConfig.setUseNistType4(false);
+
+        ExportConfig.optimiseForIndexLittle(false);
+        ExportConfig.optimiseForIndex(false);
+
+
+        try {
+            mBiometricSDK = VeridiumSDK.getSingleton();
+        } catch (LicenseException e) {
+            ToastHelper.showMessage(this, "license_is_invalid");
+            e.printStackTrace();
         }
     }
 
