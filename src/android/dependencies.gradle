@@ -1,0 +1,27 @@
+repositories{
+    jcenter()
+    flatDir{
+        dirs 'libs'
+    }
+}
+
+dependencies {
+
+	compile(name:'core', ext:'aar')
+	compile(name:'sdk', ext:'aar')
+	compile(name:'analytics', ext:'aar')
+	compile(name:'dpuareu', ext:'aar')
+	compile(name:'fourfimaging', ext:'aar')
+	compile(name:'fourfnative', ext:'aar')
+	compile(name:'biometricsupport', ext:'aar')
+	compile(name:'defaultdata', ext:'aar')
+	compile(name:'veridium-licensing', ext:'aar')
+	
+}
+
+android {
+    packagingOptions {
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+    }
+}

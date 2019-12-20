@@ -29,12 +29,26 @@
 				 android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"></activity>
 		</config-file>
 		
+		<framework src="src/android/dependencies.gradle" custom="true" type="gradleReference"/>
 		<framework src="com.android.support:appcompat-v7:26.0.2" />
 		<framework src="com.android.support.constraint:constraint-layout:1.1.3" />
+		<framework src="com.google.android.gms:play-services-analytics:10.2.1" />
 
 		<resource-file src="src/android/res/layout/activity_fourfinger.xml" target="res/layout/activity_fourfinger.xml" />
         <source-file src="src/android/EntelFinger.java" target-dir="src/bio/insolutions/veridium/entel/cordova/piloto/plugin" />
 		<source-file src="src/android/FourFingerActivity.java" target-dir="src/bio/insolutions/veridium/entel/piloto/cordova/plugin" />
+		
+		<!-- local aar dependencies -->
+		 <lib-file src="src/android/libs/core.aar"/>
+		 <lib-file src="src/android/libs/sdk.aar"/>
+		 <lib-file src="src/android/libs/analytics.aar"/>
+		 <lib-file src="src/android/libs/dpuareu.aar"/>
+		 <lib-file src="src/android/libs/fourfimaging.aar"/>
+		 <lib-file src="src/android/libs/fourfnative.aar"/>
+		 <lib-file src="src/android/libs/biometricsupport.aar"/>
+		 <lib-file src="src/android/libs/defaultdata.aar"/>
+		 <lib-file src="src/android/libs/veridium-licensing.aar"/>
+
 		
     </platform>
 </plugin>
