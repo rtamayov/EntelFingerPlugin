@@ -46,14 +46,21 @@ import android.content.res.Resources;
 
 public class FourFingerActivity extends Activity {
 
-	public final String LOG_SEGUIMIENTO = "seguimientoLog";
-	private static final int REQUEST_CAPTURE = 3;
+    public final String LOG_SEGUIMIENTO = "seguimientoLog";
+    private static final int REQUEST_CAPTURE = 3;
+
+    private static final int wsqWidth = 512;
+    private static final int wsqHeigth = 512;
+
+    private static final byte fillColor = (byte) 255;
+    private static final int wsqBitRate = 200;
+    private static final int wsqDPI = 500;
+    private static final int wsqBPP = 8;
 	
     private String package_name;
 	private Resources resources;
 	
 	public Button button_capture;
-
 	private IVeridiumSDK mBiometricSDK;
 	
     @Override
@@ -165,6 +172,160 @@ public class FourFingerActivity extends Activity {
             e.printStackTrace();
         }
     }
+	
+	 @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        BiometricResultsParser.parse(resultCode, data, customCaptureHandler);
+        // complete
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    IBiometricResultsHandler customCaptureHandler = new IBiometricResultsHandler() {
+        @Override
+        public void handleSuccess(List<byte[]> results) {
+
+            if (results != null && results.size() > 0) {
+                convertirTrama(results);
+                ToastHelper.showMessage(FourFingerActivity.this, "Save success");
+
+            }else {
+                ToastHelper.showMessage(FourFingerActivity.this, "Write fail");
+            }
+        }
+
+        @Override
+        public void handleFailure() {
+            ToastHelper.showMessage(FourFingerActivity.this,"Error");
+        }
+
+        @Override
+        public void handleLivenessFailure() {
+            ToastHelper.showMessage(FourFingerActivity.this, "Failed Liveness");
+        }
+
+        @Override
+        public void handleCancellation() {
+            ToastHelper.showMessage(FourFingerActivity.this, "Cancelled");
+        }
+
+        @Override
+        public void handleError(String message) {
+            ToastHelper.showMessage(FourFingerActivity.this, "Error: " + message);
+        }
+    };
+
+    private void convertirTrama(List<byte[]> results) {
+        try {
+            JSONObject object = new JSONObject(new String(results.get(0)));
+            JSONArray fingerprints = object.getJSONArray("Fingerprints");
+            JSONObject currentFingerprint = fingerprints.getJSONObject(0);
+            JSONObject fingerImpressionImage = currentFingerprint.getJSONObject("FingerImpressionImage");
+
+            String template = fingerImpressionImage.getString("BinaryBase64ObjectRAW");
+            int height = fingerImpressionImage.getInt("Height");
+            int width = fingerImpressionImage.getInt("Width");
+            
+            String respuestaWSQ = generateWsq(template, width, height).replace("\n","");
+            regresar(respuestaWSQ);
+
+        }catch (Exception e) {
+            e.printStackTrace();
+
+        }
+    }
+
+    private void regresar(String respuestaWSQ) {
+        Intent i = new Intent();
+        i.putExtra("base64String", respuestaWSQ);
+        setResult(Activity.RESULT_OK, i);
+        finish();
+    }
+
+    String generateWsq(String rawVeridium, int widthVeridium, int heightVeridium) {
+        return getWSQfromRawImage(rawVeridium, widthVeridium, heightVeridium);
+    }
+
+    public String getWSQfromRawImage(String rawImage, int widthVeridium, int heightVeridium) {
+
+        byte[] input = Base64.decode(rawImage, Base64.DEFAULT);
+
+        int diffW = wsqWidth - widthVeridium;
+        int diffH = wsqHeigth - heightVeridium;
+
+        int widhtL = (diffW / 2);
+        int widhtR = (diffW / 2) + (diffW % 2);
+
+        int heigthU = (diffH / 2);
+        int heigthD = (diffH / 2) + (diffH % 2);
+
+        return convertRawImageToWSQ(widthVeridium, heightVeridium, widhtL, widhtR, heigthU, heigthD, input, diffW % 2, diffH % 2);
+    }
+
+
+    private String convertRawImageToWSQ(int width, int heigth, int widhtL, int widhtR, int heigthU, int heigthD, byte[] rawImage, int modW, int modH) {
+        byte[] resizedFPImage = new byte[262144];
+        int posRowFPImage = 0;
+        int posRawImage = 0;
+
+        try {
+            if (heigth > 512) {
+
+                for (int i = 0; i < resizedFPImage.length; i++) {
+
+                    if (posRowFPImage > (widhtL) && posRowFPImage < (width + widhtR + (modW == 0 ? 1 : 0))) {
+                        resizedFPImage[i] = rawImage[posRawImage];
+                        posRawImage++;
+                    } else {
+                        resizedFPImage[i] = fillColor;
+                    }
+
+                    if (posRowFPImage == 511)
+                        posRowFPImage = 0;
+                    else
+                        posRowFPImage++;
+                }
+            } else {
+                for (int i = 0; i < resizedFPImage.length; i++) {
+                    if (i >= (wsqHeigth * heigthU) && i <= (wsqHeigth * (heigth + heigthD - (modH == 0 ? 0 : 1)))) {
+                        if (posRowFPImage > (widhtL) && posRowFPImage < (width + widhtR + (modW == 0 ? 1 : 0))) {
+                            resizedFPImage[i] = rawImage[posRawImage];
+                            posRawImage++;
+                        } else {
+                            resizedFPImage[i] = fillColor;
+                        }
+
+                        if (posRowFPImage == 511)
+                            posRowFPImage = 0;
+                        else
+                            posRowFPImage++;
+                    } else {
+                        resizedFPImage[i] = fillColor;
+                    }
+                }
+            }
+
+            CompressionImpl comp = new CompressionImpl();
+
+            comp.Start();
+            comp.SetWsqBitrate(wsqBitRate, 1);
+
+            byte[] rawCompress = comp.CompressRaw(resizedFPImage, wsqWidth, wsqHeigth, wsqDPI, wsqBPP, Compression.CompressionAlgorithm.COMPRESSION_WSQ_NIST);
+            comp.Finish();
+
+            return Base64.encodeToString(rawCompress, Base64.DEFAULT);
+
+        } catch (UareUException ex) {
+            ex.printStackTrace();
+            return null;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        } catch (Throwable ex) {
+            return null;
+        }
+    }
+
 
 
 
