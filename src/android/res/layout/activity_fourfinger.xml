@@ -1,24 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="5"
     tools:context=".MainActivity">
-	
-	    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btn_presioname"
+        android:id="@+id/btn_pulgar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Presioname !"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Pulgar" />
 
-</android.support.constraint.ConstraintLayout>
+    <Button
+        android:id="@+id/btn_indice"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Indice"/>
+
+    <Button
+        android:id="@+id/btn_medio"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Medio"/>
+    <Button
+        android:id="@+id/btn_anular"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Anular"/>
+
+    <Button
+        android:id="@+id/btn_menique"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Menique"/>
+</LinearLayout>

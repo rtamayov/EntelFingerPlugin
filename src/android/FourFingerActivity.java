@@ -60,7 +60,8 @@ public class FourFingerActivity extends Activity {
     private String package_name;
 	private Resources resources;
 	
-	public Button button_capture;
+	private int indice = 0;
+    public Button button_pulgar, button_indice, button_medio, button_alunar, button_menique;
 	private IVeridiumSDK mBiometricSDK;
 	
     @Override
@@ -72,23 +73,79 @@ public class FourFingerActivity extends Activity {
 		verificarPermisosAplicacion();
 		initSDK();
 		
-		button_capture = (Button) findViewById(getResourceId("id/btn_presioname"));
-		button_capture.setOnClickListener(new View.OnClickListener() {
+		button_pulgar = (Button) findViewById(getResourceId("id/btn_pulgar"));
+		button_indice = (Button) findViewById(getResourceId("id/btn_indice"));
+        button_medio = (Button) findViewById(getResourceId("id/btn_medio"));
+        button_alunar = (Button) findViewById(getResourceId("id/btn_anular"));
+        button_menique = (Button) findViewById(getResourceId("id/btn_menique"));
+		
+		button_pulgar.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
-                ExportConfig.optimiseForIndexLittle(false);
-                ExportConfig.optimiseForIndex(false);
+                indice = 0;
+                abrirPulgar();
+            }
+        });
 
-                if (mBiometricSDK != null) {
-                    Intent captureIntent = mBiometricSDK.capture(new String[]{FourFInterface.UID});
-                    startActivityForResult(captureIntent, REQUEST_CAPTURE);
-                }else{
-                    ToastHelper.showMessage(FourFingerActivity.this, "engine_not_initialise");
-                    Log.e(LOG_SEGUIMIENTO, "IVeridiumSDK object not initialised");
-                }
+        button_indice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                indice = 1;
+                abrir4Finger();
+            }
+        });
+
+        button_medio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                indice = 2;
+                abrir4Finger();
+            }
+        });
+
+        button_alunar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                indice = 3;
+                abrir4Finger();
+            }
+        });
+
+        button_menique.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                indice = 0;
+                abrir4Finger();
             }
         });
     }
 	
+	  private void abrir4Finger(){
+        ExportConfig.optimiseForIndexLittle(false);
+        ExportConfig.optimiseForIndex(false);
+
+        if (mBiometricSDK != null) {
+            Intent captureIntent = mBiometricSDK.capture(new String[]{FourFInterface.UID});
+            startActivityForResult(captureIntent, REQUEST_CAPTURE);
+        }else{
+            ToastHelper.showMessage(FourFingerActivity.this, "Engine null: Licence is invalid");
+            Log.e(LOG_SEGUIMIENTO, "IVeridiumSDK object not initialised");
+        }
+    }
+
+
+    private void abrirPulgar(){
+        ExportConfig.optimiseForIndexLittle(false);
+        ExportConfig.optimiseForIndex(false);
+
+        if (mBiometricSDK != null) {
+            Intent captureIntent = mBiometricSDK.captureTHUMB(new String[]{FourFInterface.UID});
+            startActivityForResult(captureIntent, REQUEST_CAPTURE);
+        }else{
+            ToastHelper.showMessage(FourFingerActivity.this, "Engine null: Licence is invalid");
+            Log.e(LOG_SEGUIMIENTO, "IVeridiumSDK object not initialised");
+        }
+    }
 	
 	private int getResourceId (String typeAndName)
     {
@@ -219,7 +276,7 @@ public class FourFingerActivity extends Activity {
         try {
             JSONObject object = new JSONObject(new String(results.get(0)));
             JSONArray fingerprints = object.getJSONArray("Fingerprints");
-            JSONObject currentFingerprint = fingerprints.getJSONObject(0);
+            JSONObject currentFingerprint = fingerprints.getJSONObject(indice);
             JSONObject fingerImpressionImage = currentFingerprint.getJSONObject("FingerImpressionImage");
 
             String template = fingerImpressionImage.getString("BinaryBase64ObjectRAW");
