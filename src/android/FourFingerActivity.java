@@ -90,7 +90,7 @@ public class FourFingerActivity extends Activity {
         button_indice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                indice = 1;
+                indice = 0;
                 abrir4Finger();
             }
         });
@@ -98,7 +98,7 @@ public class FourFingerActivity extends Activity {
         button_medio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                indice = 2;
+                indice = 1;
                 abrir4Finger();
             }
         });
@@ -106,7 +106,7 @@ public class FourFingerActivity extends Activity {
         button_alunar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                indice = 3;
+                indice = 2;
                 abrir4Finger();
             }
         });
@@ -114,7 +114,7 @@ public class FourFingerActivity extends Activity {
         button_menique.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                indice = 0;
+                indice = 3;
                 abrir4Finger();
             }
         });
